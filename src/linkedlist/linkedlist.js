@@ -8,33 +8,68 @@ module.exports = class LinkedList {
         this._fim = null;
     }
 
-    add(elemento, index) {
+    add(elemento) {
 
         const novo = new Celula(elemento);
 
-        if(elemento && index != undefined && index + 1 != this._contador + 1)
-            this._inserirNoIndex(novo, index)
-        else if(elemento) {
-            this._inserirNoFinal(novo);
+        if(elemento) {
+
+            if(this._inicio == null) {
+                this._inicio = novo;
+                this._fim = this._inicio;
+            }
+            else {
+                
+                let atual = this._fim;
+    
+                atual.proximo = novo;
+    
+                let aux = atual;
+                atual = atual.proximo;
+                atual.anterior = aux;
+    
+                this._fim = atual;
+    
+            }
+
         }
 
         this._contador = ++this._contador;
 
     }
 
-    getById(num) {
+    get(index) {
+
+        let atual = null;
         
-        let atual = this._inicio;
+        if(index < this._contador) {
 
-        for( let i = 0; i < num; i++ ) {
+            const meio = Math.floor(this._contador / 2);
 
-            if(atual.proximo)
-                atual = atual.proximo;
-            else
-                throw new Error('Index Out of Bounds.');  
+            if(index < meio) {
+
+                atual = this._inicio;
+
+                for( let i = 0; i < index; i++ ) {
+                    atual = atual.proximo;  
+                }
+
+            }
+            else {
+
+                atual = this._fim;
+
+                for( let i = this._contador-1; i > index; i-- ) {
+                    atual = atual.anterior;
+                }
+
+            }
 
         }
-
+        else {
+            throw new RangeError('index out of bounds');
+        }
+        
         return atual.elemento;
 
     }
@@ -43,112 +78,96 @@ module.exports = class LinkedList {
         return this._contador;
     }
 
-    _inserirNoFinal(novo) {
+    set(elemento, index) {
 
-        if(this._inicio == null) {
-            this._inicio = novo;
-            this._fim = this._inicio;
-        }
-        else {
-            
-            let atual = this._fim;
+        if(elemento) {
 
-            atual.proximo = novo;
+            const novo = new Celula(elemento);
 
-            let aux = atual;
-            atual = atual.proximo;
-            atual.anterior = aux;
+            if(index <= (this._contador)) {
 
-            this._fim = atual;
+                const meio = Math.floor(this._contador / 2);
 
-        }
+                if(index > meio) {
 
-    }
+                    if(index == this._contador - 1) {
 
-    _inserirNoIndex(novo, index) {
+                        let aux = this._fim;
+                        let atual = novo;
 
-        if(index <= (this._contador)) {
+                        atual.proximo = aux;
+                        atual.anterior = aux.anterior;
 
-            const meio = Math.floor(this._contador / 2);
-
-            if(index > meio) {
-
-                if(index == this._contador - 1) {
-
-                    let aux = this._fim;
-                    let atual = novo;
-
-                    atual.proximo = aux;
-                    atual.anterior = aux.anterior;
-
-                    aux.anterior.proximo = atual;
-                    aux.anterior = atual;
-                    
-                }
-                else {
-                    
-                    let atual = this._fim;
-                    let proximo = null;
-
-                    for(let i = this._contador; i > index; i--) {
-                        proximo = atual;
-
-                        atual = atual.anterior;
+                        aux.anterior.proximo = atual;
+                        aux.anterior = atual;
+                        
                     }
+                    else {
 
-                    let aux = atual;
-                    atual = novo;
+                        let atual = this._fim;
+                        let proximo = null;
 
-                    atual.proximo = proximo;
-                    proximo.anterior = atual;
+                        for(let i = this._contador; i > index; i--) {
+                            proximo = atual;
 
-                    atual.anterior = aux;
-                    aux.proximo = atual;
+                            atual = atual.anterior;
+                        }
 
-                }
+                        let aux = atual;
+                        atual = novo;
 
-            }
-            else {
+                        atual.proximo = proximo;
+                        proximo.anterior = atual;
 
-                if(index == 0) {
-
-                    let aux = this._inicio;
-                    let atual = novo;
-
-                    this._inicio = atual;
-                    atual.proximo = aux;
-                    aux.anterior = atual;
-                    
-                }
-                else {
-
-                    let atual = this._inicio;
-                    let anterior = null;
-
-                    for(let i = 0; i < index; i++) {
-
-                        anterior = atual;
-
-                        atual = atual.proximo;
+                        atual.anterior = aux;
+                        aux.proximo = atual;
 
                     }
 
-                    let aux = atual;
-                    atual = novo;
+                }
+                else {
 
-                    atual.anterior = anterior;
-                    anterior.proximo = atual;
+                    if(index == 0) {
 
-                    atual.proximo = aux;
-                    aux.anterior = atual;
+                        let aux = this._inicio;
+                        let atual = novo;
+
+                        this._inicio = atual;
+                        atual.proximo = aux;
+                        aux.anterior = atual;
+                        
+                    }
+                    else {
+
+                        let atual = this._inicio;
+                        let anterior = null;
+
+                        for(let i = 0; i < index; i++) {
+
+                            anterior = atual;
+
+                            atual = atual.proximo;
+
+                        }
+
+                        let aux = atual;
+                        atual = novo;
+
+                        atual.anterior = anterior;
+                        anterior.proximo = atual;
+
+                        atual.proximo = aux;
+                        aux.anterior = atual;
+
+                    }
 
                 }
-
             }
-        }
-        else
-            throw new Error('Index Out of Bounds.');  
+            else
+                throw new RangeError('index out of bounds');
 
+        }
+        this._contador = ++this._contador; 
     }
 
 }
