@@ -12,6 +12,14 @@ module.exports = class Celula {
         return this._proximo;
     }
 
+    set anterior(anterior) {
+        this._anterior = anterior;
+    }
+
+    get anterior() {
+        return this._anterior;
+    }
+
     set elemento(elemento) {
         this._elemento = elemento;
     }
